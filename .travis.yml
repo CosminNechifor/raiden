@@ -17,6 +17,7 @@ templates:
       - .travis/install.sh
     script:
       - .travis/run.sh
+      echo "$TRAVIS_EVENT_TYPE";
     after_script:
       - coveralls
 
@@ -235,4 +236,5 @@ jobs:
           on:
             repo: raiden-network/raiden
             branch: master
+
             condition: $TRAVIS_EVENT_TYPE = cron
