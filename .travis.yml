@@ -17,7 +17,7 @@ templates:
       - .travis/install.sh
     script:
       - .travis/run.sh
-      echo "$TRAVIS_EVENT_TYPE";
+      - echo "$TRAVIS_EVENT_TYPE"
     after_script:
       - coveralls
 
