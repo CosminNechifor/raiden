@@ -5,7 +5,7 @@ stages:
   - name: integration
     if: type = cron OR commit_message =~ /\[ci integration\]/ OR tag IS present
   - name: deploy
-    if: commit_message =~ /\[testing\]/ OR tag IS present AND tag =~ /^v[\d]+\.[\d]+\.[\d]+/
+    if: tag IS present AND tag =~ /^v[\d]+\.[\d]+\.[\d]+/
 
 templates:
   job-template-test: &job-template-test
@@ -156,16 +156,16 @@ jobs:
       before_install: mkdir -p $HOME/.bin; export PATH=$PATH:$HOME/.bin; .travis/before_install.sh
       install: .travis/install.sh
       script: RAIDENVERSION=$TRAVIS_TAG make bundle-docker
-#      deploy:
-#      - provider: releases
-#        api_key:
-#          secure: O85yltVQ1OacJQoNQWDJqOsXuSb+x7IMJTtUPuFM5iAOIGLmzhk0/qzJInixCGbAfWMYT4wTjA6OfxeiAWYzC5pCgqedZOsjp+8bXjn2Ek443Y+FBay3g38ebn3KBFBat3iMOamdrFSGTENugdG418GdK6yFVYpyCCUJXWLBcBUPOi7BlakI8TkznsaCad7OVRrPfMHWRe11WI3b4fajPnH/M7JRdDpT5GTisEchwKzYHnBttYySDZcQS3gtAEK7Srg9AkdEYCW3DOkmW4DeEgrQAQVcHHAV7eZREC1M3SrsrCotEqhEmIy29akOVKpOZtYWMxNFIsScDt39Y2hJLXRo1NjN0RBgIOg+Asl3B1cuK3Zfzc30r+Fyfkl9yFXpC35xddh2dHz5PFyssmtVZMEdxECtQT0DN08FB1JNdBbz3tfNw84IvR2ymYcQdRFWQM51rBUjUGspzDftAdITKkk3Z67jgYnaVvL0iBMbuuFjZDs8375IjIo7hxJ5UY7YWLV8Ic2r89wq5Dw7EsL5cyc4BVfj1kByZ1BJ6sZEKaqVdDdEc1Bv2/SYk6Da/muPB9gYK8Baw1gumLvrVS65EUVvwGmnq0zKrKmvTLl0aNPRNInaOVOloK63HdOwJhiLRn50YfCARrX+5kKBIQxdtNtmfPmdYJ3cm5bNhaXQ8fs=
-#        file: dist/raiden-${TRAVIS_TAG}-linux.tar.gz
-#        skip_cleanup: true
-#        on:
-#          tags: true
-#          repo: raiden-network/raiden
-#          branch: master
+      deploy:
+      - provider: releases
+        api_key:
+          secure: O85yltVQ1OacJQoNQWDJqOsXuSb+x7IMJTtUPuFM5iAOIGLmzhk0/qzJInixCGbAfWMYT4wTjA6OfxeiAWYzC5pCgqedZOsjp+8bXjn2Ek443Y+FBay3g38ebn3KBFBat3iMOamdrFSGTENugdG418GdK6yFVYpyCCUJXWLBcBUPOi7BlakI8TkznsaCad7OVRrPfMHWRe11WI3b4fajPnH/M7JRdDpT5GTisEchwKzYHnBttYySDZcQS3gtAEK7Srg9AkdEYCW3DOkmW4DeEgrQAQVcHHAV7eZREC1M3SrsrCotEqhEmIy29akOVKpOZtYWMxNFIsScDt39Y2hJLXRo1NjN0RBgIOg+Asl3B1cuK3Zfzc30r+Fyfkl9yFXpC35xddh2dHz5PFyssmtVZMEdxECtQT0DN08FB1JNdBbz3tfNw84IvR2ymYcQdRFWQM51rBUjUGspzDftAdITKkk3Z67jgYnaVvL0iBMbuuFjZDs8375IjIo7hxJ5UY7YWLV8Ic2r89wq5Dw7EsL5cyc4BVfj1kByZ1BJ6sZEKaqVdDdEc1Bv2/SYk6Da/muPB9gYK8Baw1gumLvrVS65EUVvwGmnq0zKrKmvTLl0aNPRNInaOVOloK63HdOwJhiLRn50YfCARrX+5kKBIQxdtNtmfPmdYJ3cm5bNhaXQ8fs=
+        file: dist/raiden-${TRAVIS_TAG}-linux.tar.gz
+        skip_cleanup: true
+        on:
+          tags: true
+          repo: raiden-network/raiden
+          branch: master
 ## Disabled until automated release account is reactivated
 #      - provider: pypi
 #        user: raiden_pypi_automated
@@ -177,7 +177,6 @@ jobs:
 #          distributions: sdist bdist_wheel
 #          repo: raiden-network/raiden
 #          branch: master
-      deploy:
       - provider: s3
         access_key_id: MK22XIZDUYA3EWBHGAKD
         secret_access_key:
@@ -215,28 +214,27 @@ jobs:
         - cd dist && zip -9 -r raiden-${TRAVIS_TAG}-macOS.zip raiden*
         # "Fix" Travis issues #6307 #6522 #9486
         - shell_session_update() { :; };
-#      deploy:
-#        - provider: releases
-#          api_key:
-#            secure: O85yltVQ1OacJQoNQWDJqOsXuSb+x7IMJTtUPuFM5iAOIGLmzhk0/qzJInixCGbAfWMYT4wTjA6OfxeiAWYzC5pCgqedZOsjp+8bXjn2Ek443Y+FBay3g38ebn3KBFBat3iMOamdrFSGTENugdG418GdK6yFVYpyCCUJXWLBcBUPOi7BlakI8TkznsaCad7OVRrPfMHWRe11WI3b4fajPnH/M7JRdDpT5GTisEchwKzYHnBttYySDZcQS3gtAEK7Srg9AkdEYCW3DOkmW4DeEgrQAQVcHHAV7eZREC1M3SrsrCotEqhEmIy29akOVKpOZtYWMxNFIsScDt39Y2hJLXRo1NjN0RBgIOg+Asl3B1cuK3Zfzc30r+Fyfkl9yFXpC35xddh2dHz5PFyssmtVZMEdxECtQT0DN08FB1JNdBbz3tfNw84IvR2ymYcQdRFWQM51rBUjUGspzDftAdITKkk3Z67jgYnaVvL0iBMbuuFjZDs8375IjIo7hxJ5UY7YWLV8Ic2r89wq5Dw7EsL5cyc4BVfj1kByZ1BJ6sZEKaqVdDdEc1Bv2/SYk6Da/muPB9gYK8Baw1gumLvrVS65EUVvwGmnq0zKrKmvTLl0aNPRNInaOVOloK63HdOwJhiLRn50YfCARrX+5kKBIQxdtNtmfPmdYJ3cm5bNhaXQ8fs=
-#          file: dist/raiden-${TRAVIS_TAG}-macOS.zip
-#          skip_cleanup: true
-#        - provider: script
-#          script: .travis/update_formula.sh
-#          skip_cleanup: true
-
       deploy:
-      - provider: s3
-        access_key_id: MK22XIZDUYA3EWBHGAKD
-        secret_access_key:
-          secure: "j21aH69JW2vEg/uVkIIX7Z891aQpijZ17IdqV+2pW5Rn3+/Qsl7dnmNY0yzsx7iqlEGuqrb5TCsRxjX8sgMiPRppCon2NMkoZLpIRcnY0Wp2j1D/TNwyBbyYNwlaQZQshzIgmNE8+Df6o/XnpQ82lYpxr2K6VMz6KlvxOJtb6AyxplryiwJ4uUVHsndSF1LZkOKq7sEKBTMVXq1bKIc1Tb5EUDXV9fs7afeOYAW9iUzWWXCroRDZULolsBKcIL3a06eKLRIrIeQghd3KoopEeGEbyLEFqiakOOEflXMuZQuLKMFi4Qdn/v2KNzb1uh5KZTksYLN25jjgk4gD6QtPy1vODi199e8DeuQMNZL72yGA+HwkPNUyBcNH0qyG4Ecl0C0cawkVrvgBIH9e9XTtEUHbKsbyySwveVUKhxEcrBTTV4neI4if+VI1dNRcAWn7ttU1TAS2cZ3iz4nzOI4/Hygmpn+rpSltengQT9s+F49+JgJEraDnURHtuSZyMW83xyVUik2iAfrBCOPa+RzOlo9A+F1SvbzoO27sBQ761q630mrR2zodN0tZc1aJNu2Jeb1OxqPyGfBqy5bU699RT3VFISKisgg4Y5XgIbZzL0VcwXVDHQHgEIdIQ9vemuEgsoZxhYpRFoheBn9zZhzRTmLmyfhdNQraNXhHnSq6bS8="
-        bucket: "raiden-nightlies"
-        acl: public_read
-        file: dist/raiden-${TRAVIS_TAG}-macOS.zip
-        cache_control: "max-age=31536000"
-        endpoint: https://ams3.digitaloceanspaces.com
-        on:
-          tags: true
-          repo: raiden-network/raiden
-          branch: master
-          condition: "$TRAVIS_EVENT_TYPE = cron"
+        - provider: releases
+          api_key:
+            secure: O85yltVQ1OacJQoNQWDJqOsXuSb+x7IMJTtUPuFM5iAOIGLmzhk0/qzJInixCGbAfWMYT4wTjA6OfxeiAWYzC5pCgqedZOsjp+8bXjn2Ek443Y+FBay3g38ebn3KBFBat3iMOamdrFSGTENugdG418GdK6yFVYpyCCUJXWLBcBUPOi7BlakI8TkznsaCad7OVRrPfMHWRe11WI3b4fajPnH/M7JRdDpT5GTisEchwKzYHnBttYySDZcQS3gtAEK7Srg9AkdEYCW3DOkmW4DeEgrQAQVcHHAV7eZREC1M3SrsrCotEqhEmIy29akOVKpOZtYWMxNFIsScDt39Y2hJLXRo1NjN0RBgIOg+Asl3B1cuK3Zfzc30r+Fyfkl9yFXpC35xddh2dHz5PFyssmtVZMEdxECtQT0DN08FB1JNdBbz3tfNw84IvR2ymYcQdRFWQM51rBUjUGspzDftAdITKkk3Z67jgYnaVvL0iBMbuuFjZDs8375IjIo7hxJ5UY7YWLV8Ic2r89wq5Dw7EsL5cyc4BVfj1kByZ1BJ6sZEKaqVdDdEc1Bv2/SYk6Da/muPB9gYK8Baw1gumLvrVS65EUVvwGmnq0zKrKmvTLl0aNPRNInaOVOloK63HdOwJhiLRn50YfCARrX+5kKBIQxdtNtmfPmdYJ3cm5bNhaXQ8fs=
+          file: dist/raiden-${TRAVIS_TAG}-macOS.zip
+          skip_cleanup: true
+        - provider: script
+          script: .travis/update_formula.sh
+          skip_cleanup: true
+
+        - provider: s3
+          access_key_id: MK22XIZDUYA3EWBHGAKD
+          secret_access_key:
+            secure: "j21aH69JW2vEg/uVkIIX7Z891aQpijZ17IdqV+2pW5Rn3+/Qsl7dnmNY0yzsx7iqlEGuqrb5TCsRxjX8sgMiPRppCon2NMkoZLpIRcnY0Wp2j1D/TNwyBbyYNwlaQZQshzIgmNE8+Df6o/XnpQ82lYpxr2K6VMz6KlvxOJtb6AyxplryiwJ4uUVHsndSF1LZkOKq7sEKBTMVXq1bKIc1Tb5EUDXV9fs7afeOYAW9iUzWWXCroRDZULolsBKcIL3a06eKLRIrIeQghd3KoopEeGEbyLEFqiakOOEflXMuZQuLKMFi4Qdn/v2KNzb1uh5KZTksYLN25jjgk4gD6QtPy1vODi199e8DeuQMNZL72yGA+HwkPNUyBcNH0qyG4Ecl0C0cawkVrvgBIH9e9XTtEUHbKsbyySwveVUKhxEcrBTTV4neI4if+VI1dNRcAWn7ttU1TAS2cZ3iz4nzOI4/Hygmpn+rpSltengQT9s+F49+JgJEraDnURHtuSZyMW83xyVUik2iAfrBCOPa+RzOlo9A+F1SvbzoO27sBQ761q630mrR2zodN0tZc1aJNu2Jeb1OxqPyGfBqy5bU699RT3VFISKisgg4Y5XgIbZzL0VcwXVDHQHgEIdIQ9vemuEgsoZxhYpRFoheBn9zZhzRTmLmyfhdNQraNXhHnSq6bS8="
+          bucket: "raiden-nightlies"
+          acl: public_read
+          file: dist/raiden-${TRAVIS_TAG}-macOS.zip
+          cache_control: "max-age=31536000"
+          endpoint: https://ams3.digitaloceanspaces.com
+          on:
+            tags: true
+            repo: raiden-network/raiden
+            branch: master
+            condition: "$TRAVIS_EVENT_TYPE = cron"
