@@ -1,0 +1,2 @@
+python -m scenario_player --keystore-file /home/cosmin/.ethereum/testnet/keystore/UTC--2018-09-17T15-09-08.820639869Z--aba9d6562d4f39d7384eea7ebc9b919d6efd3bb2 --password '12345' /home/cosmin/Documents/WORK/GITHUB/raiden/tools/scenario-player/example-scenarios/scenario-basic.yaml
+
